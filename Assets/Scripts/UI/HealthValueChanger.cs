@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class HealthValueChanger : MonoBehaviour
 {
     [SerializeField] private Slider _slider;
-    
+
     private float _duration;
     private float _initialValue;
     private float _powerTarget;
@@ -17,16 +17,16 @@ public class HealthValueChanger : MonoBehaviour
     private bool _isIncrease = false;
 
     private Coroutine _changeHealthCoroutine;
-    [SerializeField] private float _secondsPeriod;
+    private float _secondsPeriod;
     private bool _isDone;
 
     private void Start()
     {
         _initialValue = 0;
-        _powerTarget = 0.2f;
+        _powerTarget = 0.1f;
         _mutableValue = 0.1f;
-        _duration = 0.25f;
-        _secondsPeriod = 0.05f;
+        _duration = 1f;
+        _secondsPeriod = 0.01f;
         _isDone = true;
     }
 
