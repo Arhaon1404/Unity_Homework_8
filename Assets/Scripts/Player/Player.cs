@@ -1,11 +1,15 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Events;
 using TMPro;
+using UnityEngine.UI;
 
 public class Player : MonoBehaviour
 {
     [SerializeField] private TMP_Text _text;
+    [SerializeField] private UnityEvent _isIncrease;
+    [SerializeField] private UnityEvent _isDecrease;
 
     private int _healthValue;
     private int _maxHealth;
@@ -23,19 +27,29 @@ public class Player : MonoBehaviour
 
     public void IncreaseHeath()
     {
-        if (_healthValue < _maxHealth)
+        _healthValue += _mutableValue;
+        _text.text = _healthValue.ToString();
+
+        if (_healthValue >= _maxHealth)
         {
-            _healthValue += _mutableValue;
+            _healthValue = _maxHealth;
             _text.text = _healthValue.ToString();
         }
+
+        _isIncrease.Invoke();
     }
 
     public void DecreaseHeath()
     {
-        if (_healthValue > _minHealth)
+        _healthValue -= _mutableValue;
+        _text.text = _healthValue.ToString();
+
+        if (_healthValue <= _minHealth)
         {
-            _healthValue -= _mutableValue;
+            _healthValue = _minHealth;
             _text.text = _healthValue.ToString();
         }
+
+        _isDecrease.Invoke();
     }
 }

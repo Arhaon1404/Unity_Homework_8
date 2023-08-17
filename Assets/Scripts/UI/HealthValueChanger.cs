@@ -16,32 +16,23 @@ public class HealthValueChanger : MonoBehaviour
 
     private bool _isIncrease = false;
 
+    private Coroutine _changeHealthCoroutine;
+    [SerializeField] private float _secondsPeriod;
+    private bool _isDone;
+
     private void Start()
     {
         _initialValue = 0;
-        _powerTarget = 0.1f;
+        _powerTarget = 0.2f;
         _mutableValue = 0.1f;
         _duration = 0.25f;
+        _secondsPeriod = 0.05f;
+        _isDone = true;
     }
 
     private void Update()
     {
         _power = Mathf.MoveTowards(_initialValue, _powerTarget, _duration * Time.deltaTime);
-
-        if (_isIncrease == true)
-        {
-            if (_slider.value <= _target)
-            {
-                _slider.value += _power;
-            }
-        }
-        else if (_isIncrease == false)
-        {
-            if (_slider.value >= _target)
-            {
-                _slider.value -= _power;
-            }
-        }
     }
 
     public void IncreaseHeath()
@@ -55,6 +46,8 @@ public class HealthValueChanger : MonoBehaviour
         {
             _target = 1;
         }
+
+        RunCoroutine();
     }
 
     public void DecreaseHeath()
@@ -68,5 +61,53 @@ public class HealthValueChanger : MonoBehaviour
         {
             _target = 0;
         }
+
+        RunCoroutine();
     }
+
+    private IEnumerator ChangeHealth()
+    {
+        while (_isDone == false)
+        {
+            yield return new WaitForSeconds(_secondsPeriod);
+
+            if (_isIncrease == true)
+            {
+                if (_slider.value <= _target)
+                {
+                    _slider.value += _power;
+                }
+                else if (_slider.value >= _target)
+                {
+                    _isDone = true;
+                }
+            }
+            else if (_isIncrease == false)
+            {
+                if (_slider.value >= _target)
+                {
+                    _slider.value -= _power;
+                }
+                else if (_slider.value <= _target)
+                { 
+                    _isDone = true;
+                }
+            }
+        }
+    }
+
+    private void RunCoroutine()
+    {
+        if (_changeHealthCoroutine != null & _isDone == true)
+        {
+            StopCoroutine(_changeHealthCoroutine);
+        }
+
+        if (_isDone == true)
+        {
+            _isDone = false;
+            _changeHealthCoroutine = StartCoroutine(ChangeHealth());
+        }
+    }
+
 }
