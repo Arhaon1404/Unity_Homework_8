@@ -1,20 +1,22 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 using TMPro;
 using UnityEngine.UI;
+using static UnityEngine.GraphicsBuffer;
 
 public class Player : MonoBehaviour
 {
     [SerializeField] private TMP_Text _text;
-    [SerializeField] private UnityEvent _isIncrease;
-    [SerializeField] private UnityEvent _isDecrease;
+    [SerializeField] private UnityEvent<float> _isChange;
 
     private int _healthValue;
     private int _maxHealth;
     private int _minHealth;
     private int _mutableValue;
+    private float _floatHealthValue;
 
     private void Start()
     {
@@ -28,28 +30,32 @@ public class Player : MonoBehaviour
     public void IncreaseHeath()
     {
         _healthValue += _mutableValue;
-        _text.text = _healthValue.ToString();
 
         if (_healthValue >= _maxHealth)
         {
             _healthValue = _maxHealth;
-            _text.text = _healthValue.ToString();
         }
 
-        _isIncrease.Invoke();
+        _text.text = _healthValue.ToString();
+
+        _floatHealthValue = Convert.ToSingle(_healthValue) / 100;
+
+        _isChange.Invoke(_floatHealthValue);
     }
 
     public void DecreaseHeath()
     {
         _healthValue -= _mutableValue;
-        _text.text = _healthValue.ToString();
 
         if (_healthValue <= _minHealth)
         {
             _healthValue = _minHealth;
-            _text.text = _healthValue.ToString();
         }
 
-        _isDecrease.Invoke();
+        _text.text = _healthValue.ToString();
+
+        _floatHealthValue = Convert.ToSingle(_healthValue) / 100;
+
+        _isChange.Invoke(_floatHealthValue);
     }
 }
